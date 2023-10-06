@@ -4,33 +4,53 @@ require_once "./src/dbConnect.php";
 
 
 //fonction getAll
-$statement = $connection->query("SELECT * FROM contacts WHERE 1");
-$data = $statement->fetchAll(PDO::FETCH_ASSOC);
+function requestRead($connection){
+    $statement = $connection->query("SELECT * FROM contacts WHERE 1");
+    $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+    dd($data);
+}
+
+requestRead($connection);
+
 //fonction getById
-$statement = $connection->query("SELECT * FROM contacts WHERE id = 1");
+// $statement = $connection->query("SELECT * FROM contacts WHERE id = 1");
 // $statement = $connection->query("SELECT * FROM contacts WHERE `name` =  'Delaistre' AND `surname` = '".htmlspecialchars( $_GET["surname"])."'");
 
-$data = $statement->fetchAll(PDO::FETCH_ASSOC);
+// $data = $statement->fetchAll(PDO::FETCH_ASSOC);
 //fonction create 
-$statement = $connection->prepare("INSERT INTO `contacts` (`name`, `surname`, `status`) VALUES (?, ?, 'online') ");
-$statement->bindParam(1,$_GET["name"]);
-$statement->bindParam(2,$_GET["surname"]);
-$statement->execute();
+function requestCreate($connection, $name, $surname){
+    $statement = $connection->prepare("INSERT INTO `contacts` (`name`, `surname`, `status`) VALUES (?, ?, 'online') ");
+    $statement->bindParam(1, $name);
+    $statement->bindParam(2, $surname);
+    $statement->execute();
+}
+$nom="elouajdi";
+$prenom="cihan";
+// requestCreate($connection, $nom, $prenom);
+
+
 
 //fonction delete*
 
-$id=5;
-function requestDelet($id, $connection){
-    $statement = $connection->prepare("DELETE FROM `contacts` WHERE id =:id");
-    $statement->bindParam(':id', $id);
+function requestDelete($id, $connection){
+    $statement = $connection->prepare("DELETE FROM `contacts` WHERE id =?");
+    $statement->bindParam(1, $id);
     $statement->execute();
 }
-
-requestDelet($id, $connection);
+$idToDelete = 5;
+// requestDelete($idToDelete, $connection);
 
 //fonction update
 
-$statement = $connection->prepare("UPDATE `contacts` SET `status` = 'offline' WHERE id = ?");
-$id = 2;
-$statement->bindParam(1, $id);
-$statement->execute();
+
+function requestUpdate($connection, $id, $status){
+    $statement = $connection->prepare("UPDATE `contacts` SET `status` = '$status' WHERE id = ?");
+    $statement->bindParam(1, $id);
+    $statement->execute();
+}
+
+$idToUpdate= 1;
+$status="online";
+requestUpdate($connection, $idToUpdate, $status);
+
+
